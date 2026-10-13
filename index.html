@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Ordena el Simplex: juego educativo para practicar la secuencia del método simplex (Gimnasio 3, sección 3.3).">
+  <meta name="theme-color" content="#0b1f3a">
+  <meta name="color-scheme" content="light">
+  <title>Ordena el Simplex · Gimnasio 3</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b1f3a'/%3E%3Crect x='10' y='12' width='44' height='12' rx='4' fill='%231d4ed8'/%3E%3Crect x='10' y='28' width='44' height='12' rx='4' fill='%2347d3a5'/%3E%3Crect x='10' y='44' width='44' height='8' rx='4' fill='%23ffffff' opacity='.85'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#app-main">Ir al contenido</a>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <small>Gimnasio 3 · Método Simplex</small>
+        <strong>Ordena el Simplex</strong>
+      </div>
+      <div class="tools">
+        <span class="timer"><span class="sr-only">Tiempo: </span><span id="timer">00:00</span></span>
+        <button type="button" class="icon-btn" id="btn-mute" aria-label="Silenciar sonido"></button>
+        <button type="button" class="icon-btn" id="btn-home" aria-label="Volver al inicio" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app" id="app-main" tabindex="-1">
+
+    <!-- ============ INICIO ============ -->
+    <section id="screen-start" class="screen screen-start" aria-labelledby="start-title">
+      <p class="kicker">Sección 3.3 · Método Simplex</p>
+      <h1 id="start-title" class="start-title">ORDENA EL SIMPLEX</h1>
+      <p class="start-sub">Acomoda los pasos correctos</p>
+
+      <ul class="chips" aria-label="Datos de la partida">
+        <li class="chip">6 rondas</li>
+        <li class="chip">1–2 minutos</li>
+        <li class="chip">Toca en móvil y iPad</li>
+      </ul>
+
+      <ol class="flow" aria-label="Ruta del método">
+        <li>Forma estándar</li>
+        <li>Variable de entrada</li>
+        <li>Variable de salida</li>
+        <li>Pivoteo</li>
+        <li>¿Óptima?</li>
+      </ol>
+
+      <ol class="howto">
+        <li><strong>Toca una tarjeta</strong> de la bandeja.</li>
+        <li><strong>Toca el hueco</strong> donde va en la línea.</li>
+        <li><strong>Comprueba el orden.</strong> Si hay errores, corrige solo las tarjetas marcadas.</li>
+      </ol>
+
+      <button type="button" class="btn btn-primary btn-xl" id="btn-start">Comenzar partida</button>
+      <p class="fine">Basado en el cuadernillo Gimnasio 3, sección 3.3 (pp. 9–16). Vocabulario del cuadernillo: renglón pivote, variable de entrada y de salida.</p>
+    </section>
+
+    <!-- ============ PARTIDA ============ -->
+    <section id="screen-game" class="screen screen-game" aria-label="Partida en curso" hidden>
+      <div class="game-head">
+        <p class="phase" id="phase-label">Fase 1 · Preparación</p>
+        <p class="round-count" id="round-count">Ronda 1 de 6</p>
+      </div>
+
+      <div class="progress" id="progress" role="progressbar" aria-label="Progreso de la partida" aria-valuemin="0" aria-valuemax="6" aria-valuenow="0">
+        <span class="seg" aria-hidden="true"></span>
+        <span class="seg" aria-hidden="true"></span>
+        <span class="seg" aria-hidden="true"></span>
+        <span class="seg" aria-hidden="true"></span>
+        <span class="seg" aria-hidden="true"></span>
+        <span class="seg" aria-hidden="true"></span>
+      </div>
+
+      <div class="board">
+        <div class="board-main">
+          <article class="mission" aria-labelledby="mission-text">
+            <p class="mission-kicker">Consigna</p>
+            <h2 class="mission-text" id="mission-text" tabindex="-1"></h2>
+          </article>
+
+          <section class="line" aria-labelledby="line-title">
+            <h3 class="panel-title" id="line-title">Línea de ensamblaje</h3>
+            <ol class="slots" id="slots"></ol>
+          </section>
+        </div>
+
+        <section class="board-side tray-wrap" aria-labelledby="tray-title">
+          <div class="panel-head">
+            <h3 class="panel-title" id="tray-title">Tarjetas</h3>
+            <span class="tray-count" id="tray-count"></span>
+          </div>
+          <div class="tray" id="tray" role="group" aria-labelledby="tray-title"></div>
+          <p class="tray-hint" id="tray-hint" hidden>Toca un espacio vacío de la bandeja para devolver la tarjeta seleccionada.</p>
+        </section>
+
+        <div class="board-foot">
+          <div class="actions">
+            <button type="button" class="btn btn-ghost" id="btn-clear">Limpiar huecos</button>
+            <button type="button" class="btn btn-primary" id="btn-check">Comprobar orden</button>
+          </div>
+          <p class="feedback" id="feedback" role="status" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ RESULTADOS ============ -->
+    <section id="screen-end" class="screen screen-end" aria-labelledby="end-title" hidden>
+      <p class="kicker">Partida completada</p>
+      <h2 class="end-title" id="end-title" tabindex="-1">Línea terminada</h2>
+
+      <dl class="stats">
+        <div class="stat"><dt>Rondas superadas</dt><dd id="st-rounds">0 / 6</dd></div>
+        <div class="stat"><dt>Tiempo</dt><dd id="st-time">00:00</dd></div>
+        <div class="stat"><dt>Errores</dt><dd id="st-errors">0</dd></div>
+        <div class="stat"><dt>Precisión</dt><dd id="st-precision">0%</dd></div>
+      </dl>
+      <p class="fine">Errores: tarjetas fuera de lugar al comprobar. Precisión: colocaciones correctas entre las comprobadas.</p>
+
+      <h3 class="route-title">Ruta del método simplex</h3>
+      <ol class="route">
+        <li>Forma estándar y solución inicial en el origen</li>
+        <li>Variable de entrada: columna pivote (zj − cj más negativo)</li>
+        <li>Variable de salida: renglón pivote (criterio de la razón)</li>
+        <li>Elemento pivote en el cruce de renglón y columna</li>
+        <li>Pivoteo (Gauss-Jordan) y actualización de la base</li>
+        <li>Revisar optimalidad; si no es óptima, repetir desde el paso 2</li>
+      </ol>
+
+      <div class="actions">
+        <button type="button" class="btn btn-primary" id="btn-replay">Jugar de nuevo</button>
+        <button type="button" class="btn btn-ghost" id="btn-end-home">Volver al inicio</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ DIÁLOGO: RONDA SUPERADA ============ -->
+  <div class="overlay" id="overlay" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="done-title" aria-describedby="done-text">
+      <p class="kicker">Ronda <span id="done-num">1</span> superada</p>
+      <h2 class="done-title" id="done-title">Orden correcto</h2>
+      <p class="done-text" id="done-text"></p>
+      <p class="done-ref" id="done-ref"></p>
+      <button type="button" class="btn btn-primary btn-block" id="btn-next">Siguiente ronda</button>
+    </div>
+  </div>
+
+  <noscript><p class="noscript">Activa JavaScript para jugar a Ordena el Simplex.</p></noscript>
+
+  <script src="data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
