@@ -123,6 +123,8 @@
     };
   })();
 
+  var resultsBridge = window.OptiLabResults ? window.OptiLabResults.create('ordena-simplex') : { start: function () {}, complete: function () {}, cancel: function () {} };
+
   /* ---------- Estado de la partida ---------- */
   var game = {
     active: false,
@@ -139,6 +141,7 @@
     selected: null,
     marks: null,
     attempts: 0,
+    checksTotal: 0,
     justPlaced: -1,
     base: 0,
     startedAt: 0,
@@ -452,6 +455,7 @@
     }
 
     game.attempts++;
+    game.checksTotal++;
     game.evaluated += n;
     var marks = game.slots.map(function (c, i) { return c === i ? 'ok' : 'bad'; });
     var wrong = marks.filter(function (m) { return m === 'bad'; }).length;
@@ -532,8 +536,10 @@
     game.won = 0;
     game.errors = 0;
     game.evaluated = 0;
+    game.checksTotal = 0;
     game.locked = false;
     game.active = true;
+    resultsBridge.start();
     startClock();
     showScreen('game');
     startRound();
@@ -551,9 +557,11 @@
     Sound.finish();
     showScreen('end');
     el.endTitle.focus({ preventScroll: true });
+    resultsBridge.complete({ reason: 'completed', correct: game.evaluated - game.errors, total: game.evaluated, attempts: game.checksTotal, errors: game.errors, durationMs: Math.max(0, Math.round(elapsed())) });
   }
 
   function goHome() {
+    resultsBridge.cancel();
     game.active = false;
     game.selected = null;
     stopClock();
