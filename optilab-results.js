@@ -6,7 +6,7 @@
   function allowedOrigin(origin) {
     try {
       var u = new URL(origin);
-      return u.origin === origin && !u.username && !u.password && (origin === 'https://israeltiburcio-ai.github.io' ||
+      return u.origin === origin && !u.username && !u.password && (origin === 'https://israeltiburcio-ai.github.io' || origin === 'https://optilab.club' ||
         (u.protocol === 'http:' && ['127.0.0.1', 'localhost', '[::1]'].indexOf(u.hostname) !== -1));
     } catch (_) { return false; }
   }
